@@ -351,4 +351,131 @@ reviews-v3-58fcf899fc-ht44c       2/2     Running   0          2m1s
 
 ----------------------------------------------------
 
+master $ cat samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews
+  http:
+  - match:
+    - headers:
+        end-user:
+          exact: jason
+    route:
+    - destination:
+        host: reviews
+        subset: v2
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+master $ kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-test-v2.yaml
+virtualservice.networking.istio.io/reviews created
 
+
+----------------------------------------------------
+
+master $ cat samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v1
+      weight: 50
+    - destination:
+        host: reviews
+        subset: v3
+      weight: 50
+master $ kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-50-v3.yaml
+virtualservice.networking.istio.io/reviews configured
+master $ cat samples/bookinfo/networking/virtual-service-reviews-v3.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: reviews
+spec:
+  hosts:
+    - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+        
+
+----------------------------------------------------
+
+master $ kubectl apply -f samples/bookinfo/networking/virtual-service-reviews-v3.yaml
+virtualservice.networking.istio.io/reviews configured
+master $ istioctl get virtualservices
+VIRTUAL-SERVICE NAME   GATEWAYS           HOSTS     #HTTP     #TCP      NAMESPACE   AGE
+bookinfo               bookinfo-gateway   *             1        0      default     10m
+reviews                                   reviews       1        0      default     54s
+master $ istioctl get virtualservices -o yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"bookinfo","namespace":"default"},"spec":{"gateways":["bookinfo-gateway"],"hosts":["*"],"http":[{"match":[{"uri":{"exact":"/productpage"}},{"uri":{"exact":"/login"}},{"uri":{"exact":"/logout"}},{"uri":{"prefix":"/api/v1/products"}}],"route":[{"destination":{"host":"productpage","port":{"number":9080}}}]}]}}
+  creationTimestamp: null
+  name: bookinfo
+  namespace: default
+  resourceVersion: "7926"
+spec:
+  gateways:
+  - bookinfo-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"networking.istio.io/v1alpha3","kind":"VirtualService","metadata":{"annotations":{},"name":"reviews","namespace":"default"},"spec":{"hosts":["reviews"],"http":[{"route":[{"destination":{"host":"reviews","subset":"v3"}}]}]}}
+  creationTimestamp: null
+  name: reviews
+  namespace: default
+  resourceVersion: "9069"
+spec:
+  hosts:
+  - reviews
+  http:
+  - route:
+    - destination:
+        host: reviews
+        subset: v3
+---
+master $
+
+
+----------------------------------------------------
+
+
+        
