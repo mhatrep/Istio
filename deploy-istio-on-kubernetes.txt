@@ -1,0 +1,354 @@
+Reference: https://www.katacoda.com/courses/istio/deploy-istio-on-kubernetes
+
+master $ launch.sh
+Waiting for Kubernetes to start...
+Kubernetes started
+master $ kubectl cluster-info
+Kubernetes master is running at https://172.17.0.14:6443
+KubeDNS is running at https://172.17.0.14:6443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+master $ curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.0 sh -
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+100  2802  100  2802    0     0   3007      0 --:--:-- --:--:-- --:--:-- 15064
+Downloading istio-1.0.0 from https://github.com/istio/istio/releases/download/1.0.0/istio-1.0.0-linux.tar.gz ...  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   614    0   614    0     0   1630      0 --:--:-- --:--:-- --:--:--  1632
+ 68 14.1M   68 9876k    0     0   498k      0  0:00:29  0:00:19  0:00:10  374k
+ Istio 1.0.0 Download Complete!
+
+Istio has been successfully downloaded into the istio-1.0.0 folder on your system.
+
+Next Steps:
+See https://istio.io/docs/setup/kubernetes/install/ to add Istio to your Kubernetes cluster.
+
+To configure the istioctl client tool for your workstation,
+add the /root/istio-1.0.0/bin directory to your environment path variable with:
+         export PATH="$PATH:/root/istio-1.0.0/bin"
+
+Begin the Istio pre-installation verification check by running:
+         istioctl verify-install
+
+Need more information? Visit https://istio.io/docs/setup/kubernetes/install/
+
+
+----------------------------------------------------
+
+master $ export PATH="$PATH:/root/istio-1.0.0/bin"
+master $ cd /root/istio-1.0.0
+master $ kubectl apply -f install/kubernetes/helm/istio/templates/crds.yaml -n istio-system
+customresourcedefinition.apiextensions.k8s.io/virtualservices.networking.istio.io created
+customresourcedefinition.apiextensions.k8s.io/destinationrules.networking.istio.io created
+customresourcedefinition.apiextensions.k8s.io/serviceentries.networking.istio.io createdcustomresourcedefinition.apiextensions.k8s.io/gateways.networking.istio.io created
+customresourcedefinition.apiextensions.k8s.io/envoyfilters.networking.istio.io created
+customresourcedefinition.apiextensions.k8s.io/policies.authentication.istio.io created
+customresourcedefinition.apiextensions.k8s.io/meshpolicies.authentication.istio.io created
+customresourcedefinition.apiextensions.k8s.io/httpapispecbindings.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/httpapispecs.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/quotaspecbindings.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/quotaspecs.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/rules.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/attributemanifests.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/bypasses.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/circonuses.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/deniers.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/fluentds.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/kubernetesenvs.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/listcheckers.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/memquotas.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/noops.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/opas.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/prometheuses.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/rbacs.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/redisquotas.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/servicecontrols.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/signalfxs.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/solarwindses.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/stackdrivers.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/statsds.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/stdios.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/apikeys.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/authorizations.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/checknothings.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/kuberneteses.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/listentries.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/logentries.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/edges.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/metrics.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/quotas.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/reportnothings.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/servicecontrolreports.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/tracespans.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/rbacconfigs.rbac.istio.io created
+customresourcedefinition.apiextensions.k8s.io/serviceroles.rbac.istio.io created
+customresourcedefinition.apiextensions.k8s.io/servicerolebindings.rbac.istio.io created
+customresourcedefinition.apiextensions.k8s.io/adapters.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/instances.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/templates.config.istio.io created
+customresourcedefinition.apiextensions.k8s.io/handlers.config.istio.io created
+
+
+----------------------------------------------------
+
+master $ kubectl apply -f install/kubernetes/istio-demo-auth.yaml
+namespace/istio-system created
+configmap/istio-galley-configuration created
+configmap/istio-grafana-custom-resources created
+configmap/istio-statsd-prom-bridge created
+configmap/prometheus created
+configmap/istio-security-custom-resources created
+configmap/istio created
+configmap/istio-sidecar-injector created
+serviceaccount/istio-galley-service-account created
+serviceaccount/istio-egressgateway-service-account created
+serviceaccount/istio-ingressgateway-service-account created
+serviceaccount/istio-grafana-post-install-account created
+clusterrole.rbac.authorization.k8s.io/istio-grafana-post-install-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-grafana-post-install-role-binding-istio-system created
+job.batch/istio-grafana-post-install created
+serviceaccount/istio-mixer-service-account created
+serviceaccount/istio-pilot-service-account created
+serviceaccount/prometheus created
+serviceaccount/istio-cleanup-secrets-service-account created
+clusterrole.rbac.authorization.k8s.io/istio-cleanup-secrets-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-cleanup-secrets-istio-system created
+job.batch/istio-cleanup-secrets created
+serviceaccount/istio-security-post-install-account created
+clusterrole.rbac.authorization.k8s.io/istio-security-post-install-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-security-post-install-role-binding-istio-system created
+job.batch/istio-security-post-install created
+serviceaccount/istio-citadel-service-account created
+serviceaccount/istio-sidecar-injector-service-account created
+customresourcedefinition.apiextensions.k8s.io/virtualservices.networking.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/destinationrules.networking.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/serviceentries.networking.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/gateways.networking.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/envoyfilters.networking.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/httpapispecbindings.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/httpapispecs.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/quotaspecbindings.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/quotaspecs.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/rules.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/attributemanifests.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/bypasses.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/circonuses.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/deniers.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/fluentds.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/kubernetesenvs.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/listcheckers.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/memquotas.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/noops.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/opas.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/prometheuses.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/rbacs.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/redisquotas.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/servicecontrols.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/signalfxs.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/solarwindses.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/stackdrivers.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/statsds.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/stdios.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/apikeys.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/authorizations.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/checknothings.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/kuberneteses.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/listentries.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/logentries.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/edges.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/metrics.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/quotas.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/reportnothings.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/servicecontrolreports.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/tracespans.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/rbacconfigs.rbac.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/serviceroles.rbac.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/servicerolebindings.rbac.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/adapters.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/instances.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/templates.config.istio.io unchanged
+customresourcedefinition.apiextensions.k8s.io/handlers.config.istio.io unchanged
+clusterrole.rbac.authorization.k8s.io/istio-galley-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-egressgateway-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-ingressgateway-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-mixer-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-pilot-istio-system created
+clusterrole.rbac.authorization.k8s.io/prometheus-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-citadel-istio-system created
+clusterrole.rbac.authorization.k8s.io/istio-sidecar-injector-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-galley-admin-role-binding-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-egressgateway-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-ingressgateway-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-mixer-admin-role-binding-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-pilot-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-citadel-istio-system created
+clusterrolebinding.rbac.authorization.k8s.io/istio-sidecar-injector-admin-role-binding-istio-system created
+service/istio-galley created
+service/istio-egressgateway created
+service/istio-ingressgateway created
+service/grafana created
+service/istio-policy created
+service/istio-telemetry created
+service/istio-statsd-prom-bridge created
+deployment.extensions/istio-statsd-prom-bridge created
+service/istio-pilot created
+service/prometheus created
+service/istio-citadel created
+service/servicegraph created
+service/istio-sidecar-injector created
+deployment.extensions/istio-galley created
+deployment.extensions/istio-egressgateway created
+deployment.extensions/istio-ingressgateway created
+deployment.extensions/grafana created
+deployment.extensions/istio-policy created
+deployment.extensions/istio-telemetry created
+deployment.extensions/istio-pilot created
+deployment.extensions/prometheus created
+deployment.extensions/istio-citadel created
+deployment.extensions/servicegraph created
+deployment.extensions/istio-sidecar-injector created
+deployment.extensions/istio-tracing created
+gateway.networking.istio.io/istio-autogenerated-k8s-ingress created
+horizontalpodautoscaler.autoscaling/istio-egressgateway created
+horizontalpodautoscaler.autoscaling/istio-ingressgateway created
+horizontalpodautoscaler.autoscaling/istio-policy created
+horizontalpodautoscaler.autoscaling/istio-telemetry created
+horizontalpodautoscaler.autoscaling/istio-pilot created
+service/jaeger-query created
+service/jaeger-collector created
+service/jaeger-agent created
+service/zipkin created
+service/tracing created
+mutatingwebhookconfiguration.admissionregistration.k8s.io/istio-sidecar-injector created
+attributemanifest.config.istio.io/istioproxy created
+attributemanifest.config.istio.io/kubernetes created
+stdio.config.istio.io/handler created
+logentry.config.istio.io/accesslog created
+logentry.config.istio.io/tcpaccesslog created
+rule.config.istio.io/stdio created
+rule.config.istio.io/stdiotcp created
+metric.config.istio.io/requestcount created
+metric.config.istio.io/requestduration created
+metric.config.istio.io/requestsize created
+metric.config.istio.io/responsesize created
+metric.config.istio.io/tcpbytesent created
+metric.config.istio.io/tcpbytereceived created
+prometheus.config.istio.io/handler created
+rule.config.istio.io/promhttp created
+rule.config.istio.io/promtcp created
+kubernetesenv.config.istio.io/handler created
+rule.config.istio.io/kubeattrgenrulerule created
+rule.config.istio.io/tcpkubeattrgenrulerule created
+kubernetes.config.istio.io/attributes created
+destinationrule.networking.istio.io/istio-policy created
+destinationrule.networking.istio.io/istio-telemetry created
+
+
+----------------------------------------------------
+
+master $ kubectl get pods -n istio-system
+NAME                                      READY   STATUS              RESTARTS   AGE
+grafana-fff7f4b74-lk2jj                   1/1     Running             0          48s
+istio-citadel-65bf48d985-svm8k            1/1     Running             0          47s
+istio-cleanup-secrets-p54cw               0/1     Completed           0          49s
+istio-egressgateway-bf5775d64-57fcl       1/1     Running             0          48s
+istio-galley-8485bfc668-kzhc4             0/1     ContainerCreating   0          48s
+istio-grafana-post-install-2d7h8          0/1     Completed           0          49s
+istio-ingressgateway-6796bc5c85-gfrhd     1/1     Running             0          48s
+istio-pilot-6995fb8f49-w75vb              0/2     ContainerCreating   0          48s
+istio-policy-77cb84dbd7-cbj8d             2/2     Running             0          48s
+istio-security-post-install-znm5h         0/1     Completed           0          49s
+istio-sidecar-injector-7f6fdc7989-f9652   0/1     ContainerCreating   0          47s
+istio-statsd-prom-bridge-5b596dfc-s7zfx   1/1     Running             0          48s
+istio-telemetry-5d7b78dc5b-9j5qk          2/2     Running             0          48s
+istio-tracing-c8b67b59c-vfk8c             1/1     Running             0          47s
+prometheus-5b77b7d695-9lkjk               1/1     Running             0          48s
+servicegraph-57c58d6d6d-s7pns             1/1     Running             0          47s
+master $ kubectl apply -f /root/katacoda.yaml
+service/katacoda-servicegraph created
+service/katacoda-grafana created
+service/katacoda-jaeger-query created
+service/katacoda-prometheus created
+service/istio-ingressgateway configured
+
+
+----------------------------------------------------
+master $ cat samples/bookinfo/networking/bookinfo-gateway.yaml
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: bookinfo-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: bookinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - bookinfo-gateway
+  http:
+  - match:
+    - uri:
+        exact: /productpage
+    - uri:
+        exact: /login
+    - uri:
+        exact: /logout
+    - uri:
+        prefix: /api/v1/products
+    route:
+    - destination:
+        host: productpage
+        port:
+          number: 9080
+          
+
+----------------------------------------------------
+
+
+
+master $ kubectl apply -f <(istioctl kube-inject -f samples/bookinfo/platform/kube/bookinfo.yaml)
+service/details created
+deployment.extensions/details-v1 created
+service/ratings created
+deployment.extensions/ratings-v1 created
+service/reviews created
+deployment.extensions/reviews-v1 created
+deployment.extensions/reviews-v2 created
+deployment.extensions/reviews-v3 created
+service/productpage created
+deployment.extensions/productpage-v1 created
+master $ kubectl apply -f samples/bookinfo/networking/bookinfo-gateway.yaml
+gateway.networking.istio.io/bookinfo-gateway created
+virtualservice.networking.istio.io/bookinfo created
+
+
+----------------------------------------------------
+
+master $ kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+details-v1-779c7845c5-n9kk6       2/2     Running   0          2m2s
+productpage-v1-64f9bf7767-qgskm   2/2     Running   0          2m1s
+ratings-v1-596455959-5zxmq        2/2     Running   0          2m2s
+reviews-v1-6bdb55dbdf-rh526       2/2     Running   0          2m2s
+reviews-v2-746cc79789-vxkqs       2/2     Running   0          2m1s
+reviews-v3-58fcf899fc-ht44c       2/2     Running   0          2m1s
+
+
+----------------------------------------------------
+
+
