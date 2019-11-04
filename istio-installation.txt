@@ -1,0 +1,16 @@
+curl -L https://git.io/getLatestIstio | ISTIO_VERSION=1.0.6 sh -
+
+helm upgrade istio . -f values.yaml \
+--namespace istio-system \
+--install
+
+helm delete --purge istio 
+
+kubectl get pods
+
+
+----------------------------------------------------
+Network diagramming and HTTP statistics 
+https://www.kiali.io/ 
+----------------------------------------------------
+
