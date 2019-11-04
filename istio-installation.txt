@@ -13,4 +13,12 @@ kubectl get pods
 Network diagramming and HTTP statistics 
 https://www.kiali.io/ 
 ----------------------------------------------------
+The open observability platform
+https://grafana.com/
+----------------------------------------------------
+From metrics to insight
+https://prometheus.io/
+----------------------------------------------------
+
+
 
