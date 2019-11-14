@@ -9,3 +9,14 @@ https://github.com/weaveworks/flagger
 
 What is Istio? (https://medium.com/namely-labs/a-crash-course-for-running-istio-1c6125930715)
 Istio is a service mesh configuration engine. It reads the state of a Kubernetes cluster and performs updates to L7 (HTTP and gRPC) proxies that are initialized as “sidecars” to Kubernetes pods. These sidecars are Envoy containers that have been setup to read configuration from the Istio Pilot API (also a gRPC service) and then route traffic based on that configuration. The powerful L7 proxy under the hood allows us to leverage features such as metrics, tracing, retry logic, circuit breaking, load balancing and canary deployments.
+
+
+----------------------------------------------------
+https://medium.com/avitotech/running-istio-on-kubernetes-in-production-part-i-a8bbf7fec18e
+
+The data plane component is implemented using sidecar proxy containers. By default, a powerful proxy server envoy is used. 
+
+Istio telemetry receives GRPC from sidecar containers and reports information about service interactions and parameters. Istio-policy accepts check requests to verify compliance with Policy rules. 
+
+----------------------------------------------------
+
